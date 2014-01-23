@@ -1,4 +1,4 @@
-## Pivotal Status Board
+## Storyboard
 
 A read-only client for Pivotal Tracker optimized for use on a status board.
 

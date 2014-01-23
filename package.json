@@ -1,5 +1,5 @@
 {
-  "name": "pivotal",
+  "name": "Storyboard",
   "version": "0.1.0",
   "dependencies": {
     "gulp": "*",
