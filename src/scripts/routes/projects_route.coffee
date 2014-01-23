@@ -4,6 +4,6 @@ App.ProjectsRoute = App.Route.extend
     App.pivotal.getProjects()
 
   redirect: ->
-    projectId = localStorage.projectId
+    projectId = App.settings.getValue 'projectId'
     if projectId
-      @transitionTo 'project', JSON.parse(projectId)
+      @transitionTo 'project', projectId

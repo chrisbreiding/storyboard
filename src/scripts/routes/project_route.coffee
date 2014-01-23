@@ -6,7 +6,7 @@ App.ProjectRoute = App.Route.extend
   setupController: (controller, model)->
     controller.set 'model', model
 
-    localStorage.projectId = JSON.stringify model.id
+    App.settings.updateValue 'projectId', model.id
 
     App.pivotal.getProjects().then (projects)=>
       controller.set 'projects', _.map projects, (project)->

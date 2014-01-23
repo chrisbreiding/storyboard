@@ -1,23 +1,30 @@
 Settings = Ember.Object.extend
 
+  init: ->
+    data = localStorage[App.NAMESPACE]
+    @cache = JSON.parse(data || '{}')
+
   getValue: (key, defaultValue)->
-    value = localStorage[key]
-    if not value or value is 'undefined'
-      localStorage[key] = value = JSON.stringify defaultValue
-    JSON.parse value
+    unless @cache[key]?
+      @cache[key] = defaultValue
+    @cache[key]
 
   updateNumber: (key, value, defaultValue)->
-    value = Number value
-    if _.isNaN value
+    if _.isNaN Number(value)
       value = defaultValue
-    localStorage[key] = JSON.stringify value
-    value
+    @save key, value
 
   updateString: (key, value, defaultValue)->
-    value = value.toString()
-    if $.trim(value) is ''
+    if not _.isString(value) or $.trim(value) is ''
       value = defaultValue
-    localStorage[key] = JSON.stringify value
+    @save key, value
+
+  updateValue: (key, value)->
+    @save key, value
+
+  save: (key, value)->
+    @cache[key] = value
+    localStorage[App.NAMESPACE] = JSON.stringify @cache
     value
 
 App.settings = Settings.create()

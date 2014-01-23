@@ -2,28 +2,35 @@
   var Settings;
 
   Settings = Ember.Object.extend({
+    init: function() {
+      var data;
+      data = localStorage[App.NAMESPACE];
+      return this.cache = JSON.parse(data || '{}');
+    },
     getValue: function(key, defaultValue) {
-      var value;
-      value = localStorage[key];
-      if (!value || value === 'undefined') {
-        localStorage[key] = value = JSON.stringify(defaultValue);
+      if (this.cache[key] == null) {
+        this.cache[key] = defaultValue;
       }
-      return JSON.parse(value);
+      return this.cache[key];
     },
     updateNumber: function(key, value, defaultValue) {
-      value = Number(value);
-      if (_.isNaN(value)) {
+      if (_.isNaN(Number(value))) {
         value = defaultValue;
       }
-      localStorage[key] = JSON.stringify(value);
-      return value;
+      return this.save(key, value);
     },
     updateString: function(key, value, defaultValue) {
-      value = value.toString();
-      if ($.trim(value) === '') {
+      if (!_.isString(value) || $.trim(value) === '') {
         value = defaultValue;
       }
-      localStorage[key] = JSON.stringify(value);
+      return this.save(key, value);
+    },
+    updateValue: function(key, value) {
+      return this.save(key, value);
+    },
+    save: function(key, value) {
+      this.cache[key] = value;
+      localStorage[App.NAMESPACE] = JSON.stringify(this.cache);
       return value;
     }
   });
@@ -41,17 +48,13 @@
 
   Pivotal = Ember.Object.extend(Ember.Evented, {
     init: function() {
-      var token;
-      token = localStorage.apiToken;
-      if (token) {
-        return this.set('token', JSON.parse(token));
-      }
+      return this.set('token', App.settings.getValue('apiToken', null));
     },
     isAuthenticated: function() {
       return this.get('token') != null;
     },
     setToken: function(token) {
-      localStorage.apiToken = JSON.stringify(token);
+      App.settings.updateString('apiToken', token);
       return this.set('token', token);
     },
     getProjects: function() {
@@ -185,15 +188,15 @@
     runMigrations: function() {
       var _this = this;
       return new Ember.RSVP.Promise(function(resolve) {
-        var operations, updateVersion, version, versionAssistant, versions;
-        version = App.settings.getValue('appVersion', '0.0.0');
-        if (version === App.VERSION) {
+        var currentVersion, operations, version, versionAssistant, versions;
+        currentVersion = _this.currentVersion();
+        if (currentVersion === App.VERSION) {
           return resolve();
         }
         versionAssistant = App.VersionAssistant.create({
           versions: _.keys(_this.migrations)
         });
-        versions = versionAssistant.versionsSince(version);
+        versions = versionAssistant.versionsSince(currentVersion);
         operations = (function() {
           var _i, _len, _results;
           _results = [];
@@ -203,15 +206,21 @@
           }
           return _results;
         }).call(_this);
-        updateVersion = new Ember.RSVP.Promise(function(resolve) {
-          App.settings.updateString('appVersion', App.VERSION, '0.0.0');
-          return resolve();
-        });
-        operations.push(updateVersion);
         return Ember.RSVP.all(operations).then(function() {
+          App.settings.updateString('appVersion', App.VERSION);
           return resolve();
         });
       });
+    },
+    currentVersion: function() {
+      var data, preNamespacedVersion;
+      preNamespacedVersion = localStorage.appVersion;
+      if (preNamespacedVersion != null) {
+        return JSON.parse(preNamespacedVersion);
+      } else {
+        data = JSON.parse(localStorage[App.NAMESPACE] || '{}');
+        return data.appVersion || '0.0.0';
+      }
     }
   });
 
@@ -234,6 +243,49 @@
         convertedType = 'count';
       }
       localStorage.showAcceptedType = JSON.stringify(convertedType);
+      return resolve();
+    });
+  });
+
+}).call(this);
+
+(function() {
+  App.migrator.registerMigration('0.1.2', function() {
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      var keysAndDefaults, keysAndValues;
+      console.log('running migration for version 0.1.2');
+      keysAndDefaults = [
+        {
+          key: 'apiToken',
+          "default": 'null'
+        }, {
+          key: 'baseFontSize',
+          "default": '20'
+        }, {
+          key: 'inProgressMax',
+          "default": '5'
+        }, {
+          key: 'projectId',
+          "default": 'null'
+        }, {
+          key: 'showAcceptedType',
+          "default": '"count"'
+        }, {
+          key: 'showAcceptedValue',
+          "default": '2'
+        }
+      ];
+      keysAndValues = _.map(keysAndDefaults, function(keyAndDefault) {
+        return {
+          key: keyAndDefault.key,
+          value: JSON.parse(localStorage[keyAndDefault.key] || keyAndDefault["default"])
+        };
+      });
+      _.each(keysAndValues, function(keyAndValue) {
+        App.settings.updateValue(keyAndValue.key, keyAndValue.value);
+        return localStorage.removeItem(keyAndValue.key);
+      });
+      localStorage.removeItem('appVersion');
       return resolve();
     });
   });
@@ -636,7 +688,7 @@
     setupController: function(controller, model) {
       var _this = this;
       controller.set('model', model);
-      localStorage.projectId = JSON.stringify(model.id);
+      App.settings.updateValue('projectId', model.id);
       return App.pivotal.getProjects().then(function(projects) {
         controller.set('projects', _.map(projects, function(project) {
           return Ember.Object.create(project);
@@ -655,9 +707,9 @@
     },
     redirect: function() {
       var projectId;
-      projectId = localStorage.projectId;
+      projectId = App.settings.getValue('projectId');
       if (projectId) {
-        return this.transitionTo('project', JSON.parse(projectId));
+        return this.transitionTo('project', projectId);
       }
     }
   });

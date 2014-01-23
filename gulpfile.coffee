@@ -12,7 +12,6 @@ coffeeFiles = [
   'data/version_assistant'
   'data/migrator'
   'data/migrations/*'
-  'models/*'
   'controllers/*'
   'views/*'
   'components/*'

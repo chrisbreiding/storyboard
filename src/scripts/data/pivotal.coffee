@@ -4,14 +4,13 @@ PROJECT_UPDATES_POLL_INTERVAL = 3 * 1000
 Pivotal = Ember.Object.extend Ember.Evented,
 
   init: ->
-    token = localStorage.apiToken
-    @set 'token', JSON.parse(token) if token
+    @set 'token', App.settings.getValue 'apiToken', null
 
   isAuthenticated: ->
     @get('token')?
 
   setToken: (token)->
-    localStorage.apiToken = JSON.stringify token
+    App.settings.updateString 'apiToken', token
     @set 'token', token
 
   getProjects: ->
