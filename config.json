@@ -17,6 +17,7 @@
     "views/*",
     "components/*",
     "helpers/*",
+    "routes/base_route",
     "routes/*",
     "router"
   ]

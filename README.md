@@ -2,21 +2,32 @@
 
 A read-only client for Pivotal Tracker optimized for use on a status board.
 
-### Contributing
+### Prerequisites
 
 Install:
 
 * node
 * npm
 
-Get dependencies:
+Run:
 
 ```
-npm install -g gulp
 npm install
 ```
 
-Start developing:
+### Running locally
+
+Run:
+
+```
+npm run prod
+```
+
+then go to [http://localhost:8081](http://localhost:8081)
+
+### Developing
+
+Run:
 
 ```
 npm run dev
@@ -25,4 +36,4 @@ npm run dev
 which will:
 
 * compile CoffeeScript, SCSS, and Handlebars(.hbs) files on save
-* run a server at http://localhost:8080
+* run a server at [http://localhost:8080](http://localhost:8080)
