@@ -37,3 +37,18 @@ which will:
 
 * compile CoffeeScript, SCSS, and Handlebars(.hbs) files on save
 * run a server at [http://localhost:8080](http://localhost:8080)
+
+### Deploying
+
+Run:
+
+```
+npm run deploy
+```
+
+which will:
+
+* compile and optimize scripts and stylesheets
+* put only the relevant files into the `_build` directory
+* checkout the `_build` directory into the `gh-pages` branch
+* **force push** the `gh-pages` branch to the remote
