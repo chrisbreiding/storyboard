@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [[ $(git diff --shortstat 2> /dev/null | tail -n1) != "" ]]; then
-    echo "isDirty"
-else
-    echo "isClean"
-fi

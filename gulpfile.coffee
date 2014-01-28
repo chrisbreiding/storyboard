@@ -1,30 +1,28 @@
-es = require 'event-stream'
-through = require 'through2'
 gulp = require 'gulp'
 gutil = require 'gulp-util'
+through = require 'through2'
+es = require 'event-stream'
+
 watch = require 'gulp-watch'
 plumber = require 'gulp-plumber'
 coffee = require 'gulp-coffee'
 sass = require 'gulp-sass'
-rename = require 'gulp-rename'
-clean = require 'gulp-clean'
-exec = require './lib/exec-promise'
-_ = require 'underscore'
-fs = require 'fs'
-RSVP = require 'rsvp'
 
 emberHandlebars = require './lib/gulp-ember-handlebars'
 buildIndex = require './lib/gulp-build-index'
 order = require './lib/gulp-order'
 config = require './config.json'
 server = require './server'
+deploy = require './lib/deploy'
 
 uglify = require 'gulp-uglify'
 minifyCss = require 'gulp-minify-css'
 concat = require 'gulp-concat'
+rename = require 'gulp-rename'
+clean = require 'gulp-clean'
 
 
-# Dev tasks
+# Dev
 
 gulp.task 'devIndex', ->
   gulp.src('src/index.hbs')
@@ -64,7 +62,7 @@ gulp.task 'devServer', -> server '_dev', 8080
 gulp.task 'dev', ['devIndex', 'devCopy', 'watch', 'devServer']
 
 
-# Prod tasks
+# Prod
 
 cacheBuster = ''
 
@@ -101,7 +99,13 @@ gulp.task 'prod', ['build'], ->
   server '_build', 8081
 
 
-# Misc tasks
+# Deploy
+
+gulp.task 'deploy', ['build'], ->
+  deploy()
+
+
+# Misc
 
 gulp.task 'cleanBuild', ->
   gulp.src('_build/*', read: false).pipe(clean())
@@ -110,52 +114,3 @@ gulp.task 'cleanDev', ->
   gulp.src('_dev/*', read: false).pipe(clean())
 
 gulp.task 'clean', ['cleanBuild', 'cleanDev']
-
-
-# Deploy
-
-gulp.task 'deploy', ['build'], ->
-  execInBuild = (command)->
-    exec command, cwd: "#{__dirname}/_build"
-
-  log = (message)->
-    prefix = '. '
-    gutil.log gutil.colors.green "#{prefix}#{message}"
-
-  checkDirty = exec('./bin/get_repo_status').then (result)->
-    if /isDirty/.test result.stdout
-      gutil.log gutil.colors.red 'Cannot deploy - commit or stash any changes before deploying or they will be lost'
-      throw new Error()
-
-  initRepo = checkDirty.then ->
-    console.log 'check if need to init repo'
-    new RSVP.Promise (resolve)->
-      return resolve() if fs.existsSync '_build/.git'
-
-      exec('git config --get remote.origin.url').then (result)->
-        url = result.stdout.replace(gutil.linefeed, '')
-        execInBuild('git init').then ->
-          log 'create repo'
-          execInBuild("git remote add origin #{url}").then ->
-            resolve()
-
-  checkoutBranch = initRepo.then ->
-    execInBuild('git branch').then (result)->
-      branchExists = _.any result.stdout.split('\n'), (branch)->
-        /gh\-pages/.test branch
-      flag = if branchExists then '' else '-b'
-      log 'checkout gh-pages branch'
-      execInBuild "git checkout #{flag} gh-pages"
-
-  addAll = checkoutBranch.then (result)->
-    log 'add all files'
-    execInBuild 'git add -A'
-
-  commit = addAll.then (result)->
-    commitMessage = "automated commit by deployment at #{(new Date()).toUTCString()}"
-    log 'commit'
-    execInBuild("git commit --allow-empty -am '#{commitMessage}'").then ->
-
-  commit.then ->
-    log 'push to gh-pages branch'
-    execInBuild 'git push -f origin gh-pages'

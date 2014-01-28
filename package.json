@@ -3,11 +3,12 @@
   "version": "0.1.2",
   "dependencies": {
     "gulp": "*",
-    "glob": "*",
+    "through2": "*",
     "event-stream": "*",
+    "glob": "*",
+    "rsvp": "*",
     "connect": "*",
     "underscore": "*",
-    "through2": "*",
     "handlebars": "*",
     "gulp-util": "*",
     "gulp-clean": "*",
@@ -15,11 +16,11 @@
     "gulp-watch": "*",
     "gulp-plumber": "*",
     "gulp-concat": "*",
-    "ember-precompile": "*",
     "gulp-sass": "*",
     "gulp-minify-css": "*",
     "gulp-coffee": "*",
     "gulp-uglify": "*",
+    "ember-precompile": "*",
     "coffee-script": "*"
   },
   "scripts": {
