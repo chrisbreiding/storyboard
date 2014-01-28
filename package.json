@@ -25,6 +25,7 @@
   "scripts": {
     "dev": "./node_modules/gulp/bin/gulp.js dev --require coffee-script",
     "clean": "./node_modules/gulp/bin/gulp.js clean --require coffee-script",
-    "prod": "./node_modules/gulp/bin/gulp.js prod --require coffee-script"
+    "prod": "./node_modules/gulp/bin/gulp.js prod --require coffee-script",
+    "deploy": "./node_modules/gulp/bin/gulp.js deploy --require coffee-script"
   }
 }
