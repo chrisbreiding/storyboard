@@ -14,10 +14,12 @@
   {{render 'settings'}}
 {{/if}}
 
-<a href="#" class="toggle-fullscreen" {{action 'toggleFullscreen'}}>
-  {{#if fullscreen}}
-    <i class="fa fa-compress"></i>
-  {{else}}
-    <i class="fa fa-expand"></i>
-  {{/if}}
-</a>
+<div class="toggle-fullscreen-surface">
+  <a href="#" class="toggle-fullscreen" {{action 'toggleFullscreen'}}>
+    {{#if fullscreen}}
+      <i class="fa fa-compress"></i>
+    {{else}}
+      <i class="fa fa-expand"></i>
+    {{/if}}
+  </a>
+</div>
