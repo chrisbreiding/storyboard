@@ -24,9 +24,9 @@
     "coffee-script": "~> 1.7.1"
   },
   "scripts": {
-    "dev": "./node_modules/gulp/bin/gulp.js dev --require coffee-script/register",
-    "clean": "./node_modules/gulp/bin/gulp.js clean --require coffee-script/register",
-    "prod": "./node_modules/gulp/bin/gulp.js prod --require coffee-script/register",
-    "deploy": "./node_modules/gulp/bin/gulp.js deploy --require coffee-script/register"
+    "dev": "gulp dev --require coffee-script/register",
+    "clean": "gulp clean --require coffee-script/register",
+    "prod": "gulp prod --require coffee-script/register",
+    "deploy": "gulp deploy --require coffee-script/register"
   }
 }
