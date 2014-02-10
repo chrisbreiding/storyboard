@@ -9,18 +9,19 @@ App.IterationsRoute = App.Route.extend
     controller.set 'model', model
 
     if model.get 'length'
-      stories = model.get 'firstObject.stories'
-      @checkInProgressStories stories
+      @checkInProgressStories model
       @controllerFor('application').on 'settingsUpdated', =>
-        @checkInProgressStories stories
+        @checkInProgressStories model
 
     projectModel = @modelFor 'project'
     App.pivotal.listenForProjectUpdates projectModel
-    App.pivotal.on 'projectUpdated', ->
-      App.pivotal.getIterations(projectModel.id).then (iterations)->
+    App.pivotal.on 'projectUpdated', =>
+      App.pivotal.getIterations(projectModel.id).then (iterations)=>
         controller.set 'model', iterations
+        @checkInProgressStories controller.get('model')
 
-  checkInProgressStories: (stories)->
+  checkInProgressStories: (model)->
+    stories = model.get 'firstObject.stories'
     storiesInProgress = _.filter stories, (story)->
       _.contains inProgressStoryTypes, story.current_state
     inProgressMax = App.settings.getValue 'inProgressMax', 5
