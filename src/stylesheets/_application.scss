@@ -19,7 +19,7 @@
   text-align: center;
 
   &.warning {
-    background: #B61818;
+    background: $error-color;
     -webkit-animation: flashwarning 300s infinite;
     animation: flashwarning 300s infinite;
   }

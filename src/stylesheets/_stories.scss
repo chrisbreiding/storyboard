@@ -90,11 +90,11 @@
     }
 
     &.rejected {
-      @include statemeter(#811C1C, 20px);
+      @include statemeter(darken($error-color, 20%), 20px);
     }
 
     &.accepted {
-      @include statemeter(#346B0F, 40px);
+      @include statemeter(darken($success-color, 20%), 40px);
     }
 
     i {
@@ -128,7 +128,7 @@
     }
 
     &.bug i {
-      color: #921414;
+      color: darken($error-color, 20%);
     }
 
     &.release {
