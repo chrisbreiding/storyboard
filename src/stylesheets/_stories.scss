@@ -94,17 +94,32 @@
     }
 
     &.accepted {
+      text-align: center;
+
       @include statemeter(darken($success-color, 20%), 40px);
+      .state-meter {
+        background-image: none;
+        color: rgba(255, 255, 255, 0.6);
+
+        i {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          line-height: 1.5em;
+        }
+      }
     }
 
-    i {
+    .story-type {
       float: right;
       font-size: 1.2em;
       margin: 0.125em;
       position: relative;
     }
 
-    &.feature i {
+    &.feature .story-type {
       color: $action-color;
       font-size: 1.7em;
       margin: 0;
@@ -123,11 +138,11 @@
       text-align: center;
     }
 
-    &.chore i {
+    &.chore .story-type {
       color: #939393;
     }
 
-    &.bug i {
+    &.bug .story-type {
       color: darken($error-color, 20%);
     }
 
@@ -140,7 +155,7 @@
         margin: 0 .75em 0 2em;
       }
 
-      i {
+      .story-type {
         float: left;
         margin-left: 2px;
       }
