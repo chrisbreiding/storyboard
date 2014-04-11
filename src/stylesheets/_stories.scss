@@ -94,12 +94,11 @@
     }
 
     &.accepted {
-      text-align: center;
-
       @include statemeter(darken($success-color, 20%), 40px);
       .state-meter {
         background-image: none;
         color: rgba(255, 255, 255, 0.6);
+        text-align: center;
 
         i {
           position: absolute;
