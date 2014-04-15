@@ -2,16 +2,14 @@ $body = Ember.$('body')
 
 App.ApplicationController = Ember.Controller.extend
 
-  needs: 'settings'
-
   init: ->
     @_super()
-    @updateBaseFontSize()
+    @updateBaseFontSize App.settings.getValue('baseFontSize', 16)
+    App.eventBus.on 'baseFontSizeUpdated', (fontSize)=>
+      @updateBaseFontSize fontSize
 
-  updateBaseFontSize: (->
-    baseFontSize = @get 'controllers.settings.baseFontSize'
-    $body.css 'font-size', "#{baseFontSize}px"
-  ).observes 'controllers.settings.baseFontSize'
+  updateBaseFontSize: (fontSize)->
+    $body.css 'font-size', "#{fontSize}px"
 
   actions:
 

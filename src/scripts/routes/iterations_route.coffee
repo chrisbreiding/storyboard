@@ -14,7 +14,7 @@ App.IterationsRoute = App.Route.extend
 
     if model.get 'length'
       @checkInProgressStories model
-      @controllerFor('settings').on 'settingsUpdated', =>
+      App.eventBus.on 'settingsUpdated', =>
         @checkInProgressStories model
 
     projectModel = @modelFor 'project'
@@ -38,5 +38,5 @@ App.IterationsRoute = App.Route.extend
 
   deactivate: ->
     @controllerFor('application').send 'hideBanner'
-    @controllerFor('settings').off 'settingsUpdated'
+    App.eventBus.off 'settingsUpdated'
     App.pivotal.off 'projectUpdated'

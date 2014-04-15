@@ -1,4 +1,4 @@
-App.SettingsController = Ember.Controller.extend Ember.Evented,
+App.SettingsController = Ember.Controller.extend
 
   needs: 'project'
 
@@ -46,6 +46,10 @@ App.SettingsController = Ember.Controller.extend Ember.Evented,
     @set 'currentProjectId', @get('controllers.project.id')
   ).observes 'controllers.project.id'
 
+  baseFontSizeUpdated: (->
+    App.eventBus.trigger 'baseFontSizeUpdated', @get('baseFontSize')
+  ).observes 'baseFontSize'
+
   actions:
 
     openSettings: ->
@@ -61,4 +65,4 @@ App.SettingsController = Ember.Controller.extend Ember.Evented,
       App.settings.updateNumber 'showAcceptedValue', @get('showAcceptedValue'), 2
 
       @set 'open', false
-      @trigger 'settingsUpdated'
+      App.eventBus.trigger 'settingsUpdated'

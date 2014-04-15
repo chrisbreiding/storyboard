@@ -8,6 +8,7 @@
     "lib/markdown",
     "app",
     "templates/*",
+    "data/event_bus",
     "data/settings",
     "data/pivotal",
     "data/version_assistant",
