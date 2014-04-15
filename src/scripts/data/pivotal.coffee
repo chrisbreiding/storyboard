@@ -1,7 +1,7 @@
 BASE_URL = 'https://www.pivotaltracker.com/services/v5/'
 PROJECT_UPDATES_POLL_INTERVAL = 3 * 1000
 
-Pivotal = Ember.Object.extend Ember.Evented,
+Pivotal = Ember.Object.extend
 
   init: ->
     @set 'token', App.settings.getValue 'apiToken', null
@@ -43,7 +43,7 @@ Pivotal = Ember.Object.extend Ember.Evented,
       @queryPivotal("project_stale_commands/#{project.id}/#{currentVersion}").then (info) =>
         if currentVersion isnt info.project_version
           @set 'projectData.version', info.project_version
-          @trigger 'projectUpdated'
+          App.eventBus.trigger 'projectUpdated'
 
     @set 'projectData',
       id: project.id
