@@ -1,9 +1,13 @@
+$body = Ember.$('body')
 inProgressStoryTypes = ['started', 'finished', 'delivered', 'rejected']
 
 App.IterationsRoute = App.Route.extend
 
   model: ->
-    App.pivotal.getIterations @modelFor('project').id
+    $body.addClass 'loading'
+    getIterations = App.pivotal.getIterations @modelFor('project').id
+    getIterations.then -> $body.removeClass 'loading'
+    getIterations
 
   setupController: (controller, model)->
     controller.set 'model', model

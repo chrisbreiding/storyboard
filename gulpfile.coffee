@@ -31,6 +31,7 @@ gulp.task 'devIndex', ->
 
 gulp.task 'devCopy', ->
   gulp.src('src/fonts/**/*').pipe(gulp.dest('./_dev/fonts/'))
+  gulp.src('src/images/**/*').pipe(gulp.dest('./_dev/images/'))
   gulp.src('src/scripts/lib/*').pipe(gulp.dest('./_dev/scripts/lib/'))
 
 gulp.task 'watchCoffee', ->
@@ -69,6 +70,7 @@ cacheBuster = ''
 
 gulp.task 'buildCopy', ['cleanBuild'], ->
   gulp.src('src/fonts/**/*').pipe(gulp.dest('./_build/fonts/'))
+  gulp.src('src/images/**/*').pipe(gulp.dest('./_build/images/'))
 
 gulp.task 'buildJs', ['buildCopy'], ->
   cacheBuster = (new Date()).valueOf()
