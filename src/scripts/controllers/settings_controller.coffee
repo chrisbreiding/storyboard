@@ -1,9 +1,13 @@
 App.SettingsController = Ember.Controller.extend
 
-  needs: 'application'
+  needs: ['application', 'project']
 
   init: ->
     @_super()
+
+    App.pivotal.getProjects().then (projects)=>
+      @set 'projects', _.map projects, (project)->
+        Ember.Object.create project
 
     baseFontSize = App.settings.getValue 'baseFontSize', 16
     @set 'baseFontSize', baseFontSize
@@ -38,7 +42,14 @@ App.SettingsController = Ember.Controller.extend
       when 'age' then "#{inflectedDay} old"
   ).property 'showAcceptedType', 'showAcceptedValue'
 
+  updateCurrentProject: (->
+    @set 'currentProjectId', @get('controllers.project.id')
+  ).observes 'controllers.project.id'
+
   actions:
+
+    didSelectProject: (project)->
+      @transitionToRoute 'project', project.get('id')
 
     saveSettings: ->
       App.settings.updateNumber 'inProgressMax', @get('inProgressMax'), 5

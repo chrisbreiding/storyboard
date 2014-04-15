@@ -11,6 +11,10 @@
   right: 0;
   z-index: 10;
 
+  .single-select {
+    display: inline-block;
+  }
+
   fieldset {
     @include clearfix;
     margin-bottom: 10px;
@@ -20,6 +24,13 @@
     color: #757575;
     margin-right: 5px;
     text-align: right;
+  }
+
+  .project-picker label {
+    float: left;
+    height: 2em;
+    line-height: 2em;
+    margin-right: 10px;
   }
 
   .suffix {

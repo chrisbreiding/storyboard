@@ -6,20 +6,12 @@
 
 {{outlet}}
 
-<a href="#" class="open-settings" {{action 'openSettings'}}>
-  <i class="fa fa-cogs"></i>
-</a>
+<div class="open-settings-surface">
+  <a href="#" class="open-settings" {{action 'openSettings'}}>
+    <i class="fa fa-cog"></i>
+  </a>
+</div>
 
 {{#if settingsOpen}}
   {{render 'settings'}}
 {{/if}}
-
-<div class="toggle-fullscreen-surface">
-  <a href="#" class="toggle-fullscreen" {{action 'toggleFullscreen'}}>
-    {{#if fullscreen}}
-      <i class="fa fa-compress"></i>
-    {{else}}
-      <i class="fa fa-expand"></i>
-    {{/if}}
-  </a>
-</div>

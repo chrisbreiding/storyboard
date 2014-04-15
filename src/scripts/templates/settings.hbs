@@ -1,4 +1,9 @@
 <form class="settings" {{action 'saveSettings' on="submit"}}>
+  <fieldset class="project-picker">
+    <label>Project:</label>
+    {{single-select items=projects currentItemId=currentProjectId onSelect="didSelectProject"}}
+  </fieldset>
+
   <fieldset>
     <label for="in-progress-max">Max. stories in progress before warning:</label>
     {{input value=inProgressMax for="in-progress-max" type="number" min="0"}}

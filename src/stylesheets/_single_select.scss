@@ -2,9 +2,8 @@ $single-select-width: 11em;
 $single-select-height: 2em;
 
 .single-select {
-  background: $action-color;
+  background: $primary-color;
   border-radius: 3px;
-  float: left;
   position: relative;
   width: $single-select-width;
   height: $single-select-height;
@@ -24,7 +23,7 @@ $single-select-height: 2em;
     line-height: $single-select-height;
 
     &:hover {
-      background: darken($action-color, 10%);
+      background: darken($primary-color, 10%);
     }
   }
 
@@ -35,7 +34,7 @@ $single-select-height: 2em;
   }
 
   ul {
-    background: $action-color;
+    background: $primary-color;
     border-radius: 3px;
     margin: 0;
     overflow: hidden;
@@ -63,7 +62,7 @@ $single-select-height: 2em;
       width: $single-select-width;
 
       &:hover {
-        background: darken($action-color, 10%);
+        background: darken($primary-color, 10%);
       }
     }
 
@@ -77,7 +76,7 @@ $single-select-height: 2em;
         width: $single-select-width - $single-select-height;
 
         &:hover {
-          background: $action-color;
+          background: $primary-color;
         }
       }
     }

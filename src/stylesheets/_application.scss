@@ -25,41 +25,17 @@
   }
 }
 
-a.open-settings {
-  background: $action-color;
-  border-radius: 3px;
-  display: block;
-  color: #FFF;
-  position: absolute;
-  top: 10px;
-  right: 50px;
-  text-align: center;
-  width: 2em;
-  height: 2em;
-  line-height: 2em;
+$open-settings-size: 28px;
 
-  &:hover,
-  &:focus {
-    background: darken($action-color, 10%);
-  }
-}
-
-$fullscreen-size: 28px;
-
-.toggle-fullscreen-surface {
+.open-settings-surface {
   position: absolute;
   top: 0;
   right: 0;
-  width: $fullscreen-size;
-  height: $fullscreen-size;
-
-  .fullscreen & {
-    width: 100px;
-    height: 100px;
-  }
+  width: $open-settings-size;
+  height: $open-settings-size;
 }
 
-a.toggle-fullscreen {
+a.open-settings {
   &:before {
     border-top: solid 25px rgba(255,255,255,0.3);
     border-right: solid 25px rgba(255,255,255,0.3);
@@ -74,15 +50,15 @@ a.toggle-fullscreen {
   }
 
   color: rgba(255,255,255,0.5);
-  display: block;
+  display: none;
   font-size: 16px;
   position: absolute;
   top: 0;
   right: 0;
   text-align: center;
-  width: $fullscreen-size;
-  height: $fullscreen-size;
-  line-height: $fullscreen-size;
+  width: $open-settings-size;
+  height: $open-settings-size;
+  line-height: $open-settings-size;
 
   &:hover,
   &:focus {
@@ -90,14 +66,6 @@ a.toggle-fullscreen {
   }
 }
 
-.fullscreen {
-  .project,
-  a.open-settings,
-  a.toggle-fullscreen {
-    display: none;
-  }
-}
-
-.toggle-fullscreen-surface:hover a.toggle-fullscreen {
+.open-settings-surface:hover a.open-settings {
   display: block;
 }
