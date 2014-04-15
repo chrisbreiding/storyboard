@@ -1,6 +1,6 @@
-App.SettingsController = Ember.Controller.extend
+App.SettingsController = Ember.Controller.extend Ember.Evented,
 
-  needs: ['application', 'project']
+  needs: 'project'
 
   init: ->
     @_super()
@@ -48,6 +48,9 @@ App.SettingsController = Ember.Controller.extend
 
   actions:
 
+    openSettings: ->
+      @set 'open', true
+
     didSelectProject: (project)->
       @transitionToRoute 'project', project.get('id')
 
@@ -57,5 +60,5 @@ App.SettingsController = Ember.Controller.extend
       App.settings.updateString 'showAcceptedType', @get('showAcceptedType'), 'count'
       App.settings.updateNumber 'showAcceptedValue', @get('showAcceptedValue'), 2
 
-      applicationController = @get 'controllers.application'
-      applicationController.send 'closeSettings'
+      @set 'open', false
+      @trigger 'settingsUpdated'

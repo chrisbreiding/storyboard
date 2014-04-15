@@ -6,12 +6,4 @@
 
 {{outlet}}
 
-<div class="open-settings-surface">
-  <a href="#" class="open-settings" {{action 'openSettings'}}>
-    <i class="fa fa-cog"></i>
-  </a>
-</div>
-
-{{#if settingsOpen}}
-  {{render 'settings'}}
-{{/if}}
+{{render 'settings'}}

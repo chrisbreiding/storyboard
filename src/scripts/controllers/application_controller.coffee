@@ -1,6 +1,6 @@
 $body = Ember.$('body')
 
-App.ApplicationController = Ember.Controller.extend Ember.Evented,
+App.ApplicationController = Ember.Controller.extend
 
   needs: 'settings'
 
@@ -20,10 +20,3 @@ App.ApplicationController = Ember.Controller.extend Ember.Evented,
 
     hideBanner: ->
       @set 'banner', null
-
-    openSettings: ->
-      @set 'settingsOpen', true
-
-    closeSettings: ->
-      @set 'settingsOpen', false
-      @trigger 'settingsUpdated'
