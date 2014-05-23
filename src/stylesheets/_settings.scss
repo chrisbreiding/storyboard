@@ -23,6 +23,7 @@
   fieldset {
     @include clearfix;
     margin-bottom: 10px;
+    position: relative;
   }
 
   label {
@@ -52,3 +53,22 @@
   }
 }
 
+.base-font-size {
+  p {
+    color: #999;
+    display: none;
+    font-size: .9em;
+    font-style: italic;
+  }
+
+  .font-size-overridden & {
+    input,
+    span {
+      display: none;
+    }
+
+    p {
+      display: inline-block;
+    }
+  }
+}
