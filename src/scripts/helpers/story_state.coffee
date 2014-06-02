@@ -5,8 +5,4 @@ Ember.Handlebars.helper 'story_state', (state)->
     else
       ''
 
-    el = """
-          <span class="state-meter">#{icon}</span>
-          <span class="state">#{state}</span>
-         """
-    new Ember.Handlebars.SafeString el
+    new Ember.Handlebars.SafeString "<span class='state-meter'>#{icon}</span>"

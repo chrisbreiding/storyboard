@@ -3,8 +3,15 @@
   {{story_state current_state}}
   <ul class="labels">
     {{#each labels}}
-      <li class="label">{{this}}</li>
+      <li>{{this}}</li>
     {{/each}}
   </ul>
-  {{markdown name}}
+  <div class="main">
+    {{markdown name}}
+    <ul class="owners">
+      {{#each owners}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  </div>
 </li>

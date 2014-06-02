@@ -23,16 +23,34 @@ Pivotal = Ember.Object.extend
       _.pick project, 'id', 'name', 'version'
 
   getIterations: (projectId)->
-    @queryPivotal("projects/#{projectId}/iterations", scope: 'current_backlog').then (iterations)->
-      _.map iterations, (iteration)->
+    current = @_queryIterations projectId, 'current', true
+    backlog = @_queryIterations projectId, 'backlog'
+
+    Ember.RSVP.all([current, backlog]).then (results)->
+      _.flatten results
+
+  _queryIterations: (projectId, scope, withOwners = false)->
+    @queryPivotal("projects/#{projectId}/iterations", scope: scope).then (iterations)=>
+      @_mapIterations projectId, iterations, withOwners
+
+  _mapIterations: (projectId, iterations, withOwners)->
+    new Ember.RSVP.Promise (resolve)=>
+      ownerPromises = []
+      curatedIterations = _.map iterations, (iteration)=>
         Ember.Object.create
           start: new Date(iteration.start)
           finish: new Date(iteration.finish)
           expanded: true
-          stories: _.map iteration.stories, (story)->
+          stories: _.map iteration.stories, (story)=>
             curatedStory = _.pick story, 'id', 'name', 'current_state', 'story_type', 'estimate', 'accepted_at'
             curatedStory.labels = _.pluck story.labels, 'name'
+            if withOwners
+              ownerPromises.push @queryPivotal("projects/#{projectId}/stories/#{story.id}/owners").then (owners)->
+                curatedStory.owners = _.pluck owners, 'initials'
             curatedStory
+
+      Ember.RSVP.all(ownerPromises).then ->
+        resolve curatedIterations
 
   listenForProjectUpdates: (project)->
     if @get('projectData.id') isnt project.id
