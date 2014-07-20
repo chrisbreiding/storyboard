@@ -3,11 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <title>Storyboard</title>
-  {{stylesheets}}
+  {{#each stylesheets}}
+    <link rel="stylesheet" href="{{this}}" />
+  {{/each}}
 </head>
 <body>
   <div class="loader"></div>
+  <div id="app"></div>
 
-  {{scripts}}
+  {{#each scripts}}
+    <script src="{{this}}"></script>
+  {{/each}}
 </body>
 </html>

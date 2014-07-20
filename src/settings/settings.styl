@@ -1,0 +1,138 @@
+.settings-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+open-settings-size = 28px;
+
+.open-settings-surface {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: open-settings-size;
+  height: open-settings-size;
+}
+
+button.open-settings {
+  &:before {
+    border-top: solid 25px rgba(0, 0, 0, 0.8);
+    border-right: solid 25px rgba(0, 0, 0, 0.8);
+    border-bottom: solid 25px transparent;
+    border-left: solid 25px transparent;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+  }
+
+  background: none;
+  color: #e3e3e3;
+  display: none;
+  font-size: 16px;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: center;
+  width: open-settings-size;
+  height: open-settings-size;
+  line-height: open-settings-size;
+
+  &:hover,
+  &:focus {
+    color: #FFF;
+  }
+
+  i {
+    position: relative;
+  }
+}
+
+.open-settings-surface:hover .open-settings {
+  display: block;
+}
+
+.settings {
+  background: #f8f8f8;
+  border-left: solid 5px #929292;
+  border-bottom: solid 5px #929292;
+  border-bottom-left-radius: 3px;
+  display: none;
+  font-size: 24px;
+  margin: 0;
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  min-width: 24em;
+
+  .open & {
+    display: block;
+  }
+
+  .single-select {
+    display: inline-block;
+  }
+
+  fieldset {
+    clearfix();
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  label {
+    color: #757575;
+    margin-right: 5px;
+    text-align: right;
+  }
+
+  .project-picker label {
+    float: left;
+    height: 2em;
+    line-height: 2em;
+    margin-right: 10px;
+  }
+
+  .suffix {
+    color: #757575;
+  }
+
+  input {
+    margin-right: 5px;
+    text-align: center;
+    width: 2.8em;
+  }
+
+  select {
+    font-size: 1em;
+  }
+
+  button {
+    float: right;
+    margin-top: 10px;
+  }
+}
+
+.base-font-size {
+  p {
+    color: #999;
+    display: none;
+    font-size: .9em;
+    font-style: italic;
+  }
+
+  .font-size-overridden & {
+    input,
+    span {
+      display: none;
+    }
+
+    p {
+      display: inline-block;
+    }
+  }
+}

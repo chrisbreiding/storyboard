@@ -1,7 +1,6 @@
 .DS_Store
-.sass-cache
 npm-debug.log
 tmp
 node_modules
 _dev
-_build
+_prod

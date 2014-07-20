@@ -1,0 +1,176 @@
+.stories {
+  margin: 0;
+
+  li {
+    background: #FFF;
+    border-bottom: solid 1px #e3e3e3;
+    padding: 5px;
+    position: relative;
+
+    .main {
+      margin: 0 2em;
+
+      > div {
+        display: inline;
+      }
+    }
+
+    p {
+      display: inline;
+      margin: 0;
+    }
+
+    li {
+      border: solid 1px #333;
+      border-radius: 3px;
+      font-size: .7em;
+      margin-right: 3px;
+      padding: .1em .4em;
+    }
+
+    .owners {
+      display: inline;
+      margin: 0 0 0 5px;
+
+      li {
+        border: solid 1px #333;
+        color: #333;
+        display: inline-block;
+      }
+    }
+
+    .labels {
+      float: right;
+      margin: 0.125em 0.25em;
+
+      li {
+        background: darken(primary-color, 10%);
+        border-color: darken(primary-color, 10%);
+        color: #FFF;
+        float: right;
+      }
+    }
+
+    .state-meter {
+      background-image: repeating-linear-gradient(-65deg,
+                                                  transparent,
+                                                  transparent 5px,
+                                                  rgba(255, 255, 255, .3) 5px,
+                                                  rgba(255, 255, 255, .3) 10px);
+      border-radius: 0 3px 3px 0;
+      display: block;
+      position: absolute;
+      top: 5px;
+      left: 0;
+      width: 0;
+      height: 1.5em;
+    }
+
+    &.unscheduled,
+    &.unstarted {
+      background: #e3e3e3;
+      border-color: #c7c7c7;
+
+      .main {
+        margin-left: .5em;
+      }
+
+      .state-meter {
+        display: none;
+      }
+    }
+
+    statemeter(color, width) {
+      .state-meter {
+        background-color: color;
+        width: width;
+      }
+    }
+
+    &.started {
+      statemeter(#C78719, 10px);
+    }
+
+    &.finished {
+      statemeter(#0F516B, 20px);
+    }
+
+    &.delivered {
+      statemeter(#5C1379, 30px);
+    }
+
+    &.rejected {
+      statemeter(darken(error-color, 40%), 20px);
+    }
+
+    &.accepted {
+      statemeter(darken(success-color, 40%), 40px);
+      .state-meter {
+        background-image: none;
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+
+        i {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          line-height: 1.5em;
+        }
+      }
+    }
+
+    .story-type {
+      float: right;
+      font-size: 1.2em;
+      margin: 0.125em;
+      position: relative;
+    }
+
+    &.feature .story-type {
+      color: action-color;
+      font-size: 1.7em;
+      margin: 0;
+      text-align: center;
+    }
+
+    .estimate {
+      color: #FFF;
+      font-size: .5em;
+      line-height: 1.9em;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+    }
+
+    &.chore .story-type {
+      color: #939393;
+    }
+
+    &.bug .story-type {
+      color: darken(error-color, 20%);
+    }
+
+    &.release {
+      background: primary-color;
+      border-color: darken(primary-color, 10%);
+      color: #FFF;
+
+      .main {
+        margin: 0 0.75em 0 2em;
+      }
+
+      .story-type {
+        float: left;
+      }
+
+      .state-meter {
+        display: none;
+      }
+    }
+  }
+}
