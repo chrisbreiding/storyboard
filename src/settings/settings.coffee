@@ -3,6 +3,8 @@ _ = require 'lodash'
 pivotal = require '../data/pivotal'
 store = require '../data/store'
 
+numberProps = ['inProgressMax', 'baseFontSize', 'showAcceptedValue']
+
 module.exports = React.createClass
 
   getInitialState: ->
@@ -109,8 +111,12 @@ module.exports = React.createClass
     @refs.container.getDOMNode().className = 'settings-container open'
 
   updateSetting: (key)->
+    value = @refs[key].getDOMNode().value
+    if _.contains numberProps, key
+      value = Number value
+
     setting = {}
-    setting[key] = @refs[key].getDOMNode().value
+    setting[key] = value
     @props.onUpdate setting
 
   save: (e)->

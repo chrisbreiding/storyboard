@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "gulp": "~3.8.6",
-    "zunder": "*"
+    "zunder": "~0.2.1"
   }
 }

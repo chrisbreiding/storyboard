@@ -15,13 +15,29 @@ module.exports = React.createClass
     baseFontSize: store.fetch('baseFontSize') or 24
     showAcceptedType: store.fetch('showAcceptedType') or 'count'
     showAcceptedValue: store.fetch('showAcceptedValue') or 2
+    storiesInProgress: 0
 
   render: ->
     mainView = if @state.apiToken
-      settingsConfig = _.extend {}, @state,
+      bannerClass = if @state.storiesInProgress > @state.inProgressMax
+        'banner show'
+      else
+        'banner'
+
+      banner = React.DOM.div
+        className: bannerClass
+      , "There are over #{@state.inProgressMax} stories in progress"
+
+      project = Project
+        ref: 'project'
+        id: @state.projectId
+        onUpdate: @projectUpdated
+
+      settings = Settings _.extend {}, @state,
         onUpdate: @updateSetting
         onSave: @saveSettings
-      React.DOM.div null, Project(id: @state.projectId), Settings(settingsConfig)
+
+      React.DOM.div null, banner, project, settings
     else
       Login onLogin: @updateApiToken
     React.DOM.div
@@ -38,6 +54,9 @@ module.exports = React.createClass
         apiToken: apiToken
         projectId: projectId
         projects: projects
+
+  projectUpdated: ->
+    @setState storiesInProgress: @refs.project.storiesInProgress()
 
   updateSetting: (setting)->
     @setState setting
