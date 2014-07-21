@@ -31,6 +31,8 @@ module.exports = React.createClass
       project = Project
         ref: 'project'
         id: @state.projectId
+        showAcceptedType: @state.showAcceptedType
+        showAcceptedValue: @state.showAcceptedValue
         onUpdate: @projectUpdated
 
       settings = Settings _.extend {}, @state,

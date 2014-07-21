@@ -15,8 +15,10 @@ module.exports = React.createClass
     React.DOM.div
       className: 'project'
     ,
-      @state.iterations.map (iteration)->
+      @state.iterations.map (iteration)=>
         iteration.key = iteration.number
+        iteration.showAcceptedType = @props.showAcceptedType
+        iteration.showAcceptedValue = @props.showAcceptedValue
         Iteration iteration
 
   componentDidMount: ->
