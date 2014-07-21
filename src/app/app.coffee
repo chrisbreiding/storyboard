@@ -6,13 +6,18 @@ Project = require '../project/project'
 Settings = require '../settings/settings'
 store = require '../data/store'
 
+fontSizeMatch = location.search.match /\?.*font-?[Ss]ize\=(\d+)/i
+if fontSizeMatch and fontSizeMatch[1]
+  fontSizeOverride = fontSizeMatch[1]
+
 module.exports = React.createClass
 
   getInitialState: ->
     apiToken: store.fetch 'apiToken'
     projectId: store.fetch 'projectId'
     inProgressMax: store.fetch('inProgressMax') or 5
-    baseFontSize: store.fetch('baseFontSize') or 24
+    baseFontSize: fontSizeOverride or store.fetch('baseFontSize') or 24
+    baseFontSizeOverridden: !!fontSizeOverride
     showAcceptedType: store.fetch('showAcceptedType') or 'count'
     showAcceptedValue: store.fetch('showAcceptedValue') or 2
     storiesInProgress: 0

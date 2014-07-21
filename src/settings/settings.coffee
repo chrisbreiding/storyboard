@@ -63,7 +63,7 @@ module.exports = React.createClass
             onChange: _.partial @updateSetting, 'inProgressMax'
       ,
         React.DOM.fieldset
-          className: 'base-font-size'
+          className: if @props.baseFontSizeOverridden then 'base-font-size overridden' else 'base-font-size'
         ,
           React.DOM.label null, 'Base font size:'
         ,
