@@ -1,4 +1,4 @@
-$ = require 'jquery'
+reqwest = require 'reqwest'
 _ = require 'lodash'
 RSVP = require 'rsvp'
 store = require './store'
@@ -65,8 +65,7 @@ module.exports =
       interval: setInterval(queryForUpdates,  POLL_INTERVAL)
 
   queryPivotal: (url, data)->
-    $.ajax
-      type: 'GET'
+    reqwest
       url: "#{BASE_URL}#{url}"
       data: data
       headers:
