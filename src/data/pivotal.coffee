@@ -11,13 +11,13 @@ module.exports =
   apiToken: store.fetch 'apiToken'
 
   getProjects: ->
-    @queryPivotal('projects').then (projects)->
+    @_queryPivotal('projects').then (projects)->
       _.map projects, (project)->
         _.pick project, 'id', 'name', 'version'
 
   getProject: (id)->
-    @queryPivotal("projects/#{id}").then (project)->
-      _.pick project, 'id', 'name', 'version'
+    @_queryPivotal("projects/#{id}", fields: 'name,version,current_velocity').then (project)->
+      _.pick project, 'id', 'name', 'version', 'current_velocity'
 
   getIterations: (projectId)->
     current = @_queryIterations projectId, 'current', true
@@ -26,8 +26,16 @@ module.exports =
     RSVP.all([current, backlog]).then (results)->
       _.flatten results
 
+  getBacklogCount: (projectId)-> @_getCount projectId, 'unstarted'
+
+  getIceboxCount: (projectId)-> @_getCount projectId, 'unscheduled'
+
+  _getCount: (projectId, state)->
+    @_queryPivotal("projects/#{projectId}/stories", with_state: state).then (stories)->
+      stories.length
+
   _queryIterations: (projectId, scope, withOwners = false)->
-    @queryPivotal("projects/#{projectId}/iterations", scope: scope).then (iterations)=>
+    @_queryPivotal("projects/#{projectId}/iterations", scope: scope).then (iterations)=>
       @_mapIterations projectId, iterations, withOwners
 
   _mapIterations: (projectId, iterations, withOwners)->
@@ -41,7 +49,7 @@ module.exports =
           curatedStory = _.pick story, 'id', 'name', 'current_state', 'story_type', 'estimate', 'accepted_at'
           curatedStory.labels = _.pluck story.labels, 'name'
           if withOwners
-            ownerPromises.push @queryPivotal("projects/#{projectId}/stories/#{story.id}/owners").then (owners)->
+            ownerPromises.push @_queryPivotal("projects/#{projectId}/stories/#{story.id}/owners").then (owners)->
               curatedStory.owners = _.pluck owners, 'initials'
           curatedStory
 
@@ -54,7 +62,7 @@ module.exports =
 
     queryForUpdates = =>
       currentVersion = @projectData.version
-      @queryPivotal("project_stale_commands/#{id}/#{currentVersion}").then (info) =>
+      @_queryPivotal("project_stale_commands/#{id}/#{currentVersion}").then (info) =>
         if currentVersion isnt info.project_version
           @projectData.version = info.project_version
           onUpdate()
@@ -64,7 +72,7 @@ module.exports =
       version: version
       interval: setInterval(queryForUpdates,  POLL_INTERVAL)
 
-  queryPivotal: (url, data)->
+  _queryPivotal: (url, data)->
     reqwest
       url: "#{BASE_URL}#{url}"
       data: data

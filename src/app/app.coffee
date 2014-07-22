@@ -2,6 +2,7 @@ React = require 'react'
 _ = require 'lodash'
 pivotal = require '../data/pivotal'
 Login = require '../login/login'
+Stats = require '../stats/stats'
 Project = require '../project/project'
 Settings = require '../settings/settings'
 store = require '../data/store'
@@ -21,17 +22,18 @@ module.exports = React.createClass
     showAcceptedType: store.fetch('showAcceptedType') or 'count'
     showAcceptedValue: store.fetch('showAcceptedValue') or 2
     storiesInProgress: 0
+    velocity: 0
+    backlogCount: 0
+    iceboxCount: 0
 
   render: ->
     mainView = if @state.apiToken
-      bannerClass = if @state.storiesInProgress > @state.inProgressMax
-        'banner show'
-      else
-        'banner'
-
-      banner = React.DOM.div
-        className: bannerClass
-      , "There are over #{@state.inProgressMax} stories in progress"
+      stats = Stats
+        velocity: @state.velocity
+        storiesInProgress: @state.storiesInProgress
+        overInProgressLimit: @state.storiesInProgress > @state.inProgressMax
+        backlogCount: @state.backlogCount
+        iceboxCount: @state.iceboxCount
 
       project = Project
         ref: 'project'
@@ -44,7 +46,7 @@ module.exports = React.createClass
         onUpdate: @updateSetting
         onSave: @saveSettings
 
-      React.DOM.div null, banner, project, settings
+      React.DOM.div null, stats, project, settings
     else
       Login onLogin: @updateApiToken
     React.DOM.div
@@ -63,7 +65,11 @@ module.exports = React.createClass
         projects: projects
 
   projectUpdated: ->
-    @setState storiesInProgress: @refs.project.storiesInProgress()
+    @setState
+      storiesInProgress: @refs.project.storiesInProgress()
+      velocity: @refs.project.state.velocity
+      backlogCount: @refs.project.state.backlogCount
+      iceboxCount: @refs.project.state.iceboxCount
 
   updateSetting: (setting)->
     @setState setting

@@ -10,6 +10,10 @@ module.exports = React.createClass
 
   getInitialState: ->
     iterations: []
+    version: 0
+    velocity: 0
+    backlogCount: 0
+    iceboxCount: 0
 
   render: ->
     React.DOM.div
@@ -39,15 +43,25 @@ module.exports = React.createClass
 
   _updateProject: ->
     pivotal.getProject(@props.id).then (project)=>
-      @setState version: project.version
+      @setState
+        version: project.version
+        velocity: project.current_velocity
 
       pivotal.listenForProjectUpdates project.id, project.version, =>
-        @_updateIterations()
+        @_update()
 
-      @_updateIterations().then =>
+      @_update()
+
+  _update: ->
+    updates =
+      iterations: pivotal.getIterations @props.id
+      backlogCount: pivotal.getBacklogCount @props.id
+      iceboxCount: pivotal.getIceboxCount @props.id
+
+    RSVP.hash(updates).then (result)=>
+      @setState
+        iterations: result.iterations
+        backlogCount: result.backlogCount
+        iceboxCount: result.iceboxCount
+      , =>
         @props.onUpdate()
-
-  _updateIterations: ->
-    pivotal.getIterations(@props.id).then (iterations)=>
-      new RSVP.Promise (resolve)=>
-        @setState {iterations}, resolve
