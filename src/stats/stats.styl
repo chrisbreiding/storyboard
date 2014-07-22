@@ -35,11 +35,12 @@ stat(color) {
   display: flex;
 
   div {
-    border: solid 10px;
+    border: solid .3em;
     box-sizing: border-box;
     color: #f8f8f8;
     flex-grow: 1;
-    padding: .3em 0;
+    padding: .4em 0;
+    position: relative;
     text-align: center;
   }
 
@@ -51,8 +52,12 @@ stat(color) {
     }
   }
 
-  .in-progress {
+  .stories-in-progress {
     stat(action-color);
+  }
+
+  .points-in-progress {
+    stat(#D8D33B);
   }
 
   .warning {
@@ -67,6 +72,17 @@ stat(color) {
 
   .icebox {
     stat(primary-color);
+  }
+
+  p {
+    color: #FFF;
+    font-size: .5em;
+    line-height: .8;
+    margin: 0;
+    opacity: 0.4;
+    position: absolute;
+    bottom: 0;
+    right: 2px;
   }
 
   i {

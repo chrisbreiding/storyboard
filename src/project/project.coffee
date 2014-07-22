@@ -33,13 +33,19 @@ module.exports = React.createClass
       @_updateProject()
 
   storiesInProgress: ->
-    return 0 unless @state.iterations.length and @state.iterations[0].stories.length
+    @_storiesInProgress().length
 
-    stories = @state.iterations[0].stories
-    storiesInProgress = _.filter stories, (story)->
+  pointsInProgress: ->
+    _.reduce @_storiesInProgress(), (total, story)->
+      total += story.estimate
+      total
+    , 0
+
+  _storiesInProgress: ->
+    return [] unless @state.iterations.length and @state.iterations[0].stories.length
+
+    _.filter @state.iterations[0].stories, (story)->
       _.contains inProgressStoryTypes, story.current_state
-
-    storiesInProgress.length
 
   _updateProject: ->
     pivotal.getProject(@props.id).then (project)=>

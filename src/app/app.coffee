@@ -22,6 +22,7 @@ module.exports = React.createClass
     showAcceptedType: store.fetch('showAcceptedType') or 'count'
     showAcceptedValue: store.fetch('showAcceptedValue') or 2
     storiesInProgress: 0
+    pointsInProgress: 0
     velocity: 0
     backlogCount: 0
     iceboxCount: 0
@@ -32,6 +33,7 @@ module.exports = React.createClass
         velocity: @state.velocity
         storiesInProgress: @state.storiesInProgress
         overInProgressLimit: @state.storiesInProgress > @state.inProgressMax
+        pointsInProgress: @state.pointsInProgress
         backlogCount: @state.backlogCount
         iceboxCount: @state.iceboxCount
 
@@ -67,6 +69,7 @@ module.exports = React.createClass
   projectUpdated: ->
     @setState
       storiesInProgress: @refs.project.storiesInProgress()
+      pointsInProgress: @refs.project.pointsInProgress()
       velocity: @refs.project.state.velocity
       backlogCount: @refs.project.state.backlogCount
       iceboxCount: @refs.project.state.iceboxCount
