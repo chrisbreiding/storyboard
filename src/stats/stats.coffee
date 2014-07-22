@@ -5,11 +5,11 @@ Stat = React.createClass
     React.DOM.div
       className: @props.type
     ,
-      React.DOM.p null, @props.label or @props.type
-    ,
       React.DOM.i className: "fa fa-#{@props.icon}"
     ,
       React.DOM.span null, @props.value
+    ,
+      React.DOM.p null, @props.label or @props.type
 
 module.exports = React.createClass
 

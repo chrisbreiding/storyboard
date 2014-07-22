@@ -26,22 +26,26 @@
 }
 
 stat(color) {
-  background: darken(color, 30%);
-  border-color: color;
+  i {
+    color: lighten(color, 40%);
+  }
 }
 
 .stats {
-  clearfix();
+  background: #111;
+  border: solid 0.2em #555;
   display: flex;
+  padding: 0 0.4em;
+  text-align: center;
 
   div {
-    border: solid .3em;
+    background: #111;
     box-sizing: border-box;
     color: #f8f8f8;
+    float: left;
     flex-grow: 1;
-    padding: .4em 0;
+    padding: 0.4em 0;
     position: relative;
-    text-align: center;
   }
 
   .velocity {
@@ -57,7 +61,7 @@ stat(color) {
   }
 
   .points-in-progress {
-    stat(#D8D33B);
+    stat(action-color);
   }
 
   .warning {
@@ -76,21 +80,35 @@ stat(color) {
 
   p {
     color: #FFF;
-    font-size: .5em;
-    line-height: .8;
+    display: inline;
+    font-size: 0.5em;
     margin: 0;
+    margin-left: 0.4em;
     opacity: 0.4;
-    position: absolute;
-    bottom: 0;
-    right: 2px;
   }
 
   i {
-    font-size: .9em;
+    font-size: 0.9em;
     opacity: 0.6;
   }
 
   span {
-    margin-left: 0.5em;
+    margin-left: 0.3em;
+  }
+}
+
+@media only screen and (max-width: 72em) {
+  .stats {
+    div {
+      padding: 0.2em 0 0.6em;
+    }
+
+    p {
+      display: block;
+      line-height: .8;
+      position: absolute;
+      bottom: 0.2em;
+      width: 100%;
+    }
   }
 }
