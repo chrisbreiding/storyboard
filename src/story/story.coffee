@@ -1,5 +1,6 @@
 React = require 'react'
 marked = require 'marked'
+_ = require 'lodash'
 
 storyIcon = (storyType, estimate)->
   className = switch storyType
@@ -25,6 +26,20 @@ owners = (owners)->
     ,
       owners.map (owner, i)-> React.DOM.li key: i, owner
 
+tasks = (tasks)->
+  if tasks
+    completed = _.reduce tasks, (total, complete)->
+      total += complete
+      total
+    , 0
+
+    React.DOM.span
+      className: 'tasks'
+    ,
+      React.DOM.i className: 'fa fa-list-ul'
+    ,
+      React.DOM.span null, "#{completed}/#{tasks.length}"
+
 module.exports = React.createClass
 
   render: ->
@@ -47,3 +62,5 @@ module.exports = React.createClass
           dangerouslySetInnerHTML: __html: marked @props.name
       ,
         owners @props.owners
+      ,
+        tasks @props.tasks

@@ -10,6 +10,8 @@ module.exports =
 
   apiToken: store.fetch 'apiToken'
 
+  inProgressStoryTypes: ['started', 'finished', 'delivered', 'rejected']
+
   getProjects: ->
     @_queryPivotal('projects').then (projects)->
       _.map projects, (project)->
@@ -31,8 +33,8 @@ module.exports =
   getIceboxCount: (projectId)-> @_getCount projectId, 'unscheduled'
 
   _getCount: (projectId, state)->
-    @_queryPivotal("projects/#{projectId}/stories", with_state: state).then (stories)->
-      stories.length
+    @_queryPivotal("projects/#{projectId}/stories", with_state: state, limit: 200).then (stories)->
+      if stories.length <= 200 then stories.length else '200+'
 
   _queryIterations: (projectId, scope, withOwners = false)->
     @_queryPivotal("projects/#{projectId}/iterations", scope: scope).then (iterations)=>
@@ -40,7 +42,7 @@ module.exports =
 
   _mapIterations: (projectId, iterations, withOwners)->
     new RSVP.Promise (resolve)=>
-      ownerPromises = []
+      promises = []
       curatedIterations = _.map iterations, (iteration)=>
         number: iteration.number
         start: new Date(iteration.start)
@@ -48,12 +50,18 @@ module.exports =
         stories: _.map iteration.stories, (story)=>
           curatedStory = _.pick story, 'id', 'name', 'current_state', 'story_type', 'estimate', 'accepted_at'
           curatedStory.labels = _.pluck story.labels, 'name'
+
+          if _.contains @inProgressStoryTypes, curatedStory.current_state
+            promises.push @_queryPivotal("projects/#{projectId}/stories/#{story.id}/tasks").then (tasks)->
+              curatedStory.tasks = _.map tasks, (task)-> task.complete | 0
+
           if withOwners
-            ownerPromises.push @_queryPivotal("projects/#{projectId}/stories/#{story.id}/owners").then (owners)->
+            promises.push @_queryPivotal("projects/#{projectId}/stories/#{story.id}/owners").then (owners)->
               curatedStory.owners = _.pluck owners, 'initials'
+
           curatedStory
 
-      RSVP.all(ownerPromises).then ->
+      RSVP.all(promises).then ->
         resolve curatedIterations
 
   listenForProjectUpdates: (id, version, onUpdate)->

@@ -4,8 +4,6 @@ _ = require 'lodash'
 pivotal = require '../data/pivotal'
 Iteration = require '../iteration/iteration'
 
-inProgressStoryTypes = ['started', 'finished', 'delivered', 'rejected']
-
 module.exports = React.createClass
 
   getInitialState: ->
@@ -45,7 +43,7 @@ module.exports = React.createClass
     return [] unless @state.iterations.length and @state.iterations[0].stories.length
 
     _.filter @state.iterations[0].stories, (story)->
-      _.contains inProgressStoryTypes, story.current_state
+      _.contains pivotal.inProgressStoryTypes, story.current_state
 
   _updateProject: ->
     pivotal.getProject(@props.id).then (project)=>
