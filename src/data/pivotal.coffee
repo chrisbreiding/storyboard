@@ -33,8 +33,8 @@ module.exports =
   getIceboxCount: (projectId)-> @_getCount projectId, 'unscheduled'
 
   _getCount: (projectId, state)->
-    @_queryPivotal("projects/#{projectId}/stories", with_state: state, limit: 200).then (stories)->
-      if stories.length <= 200 then stories.length else '200+'
+    @_queryPivotal("projects/#{projectId}/stories", with_state: state, limit: 101).then (stories)->
+      if stories.length <= 100 then stories.length else '100+'
 
   _queryIterations: (projectId, scope, withOwners = false)->
     @_queryPivotal("projects/#{projectId}/iterations", scope: scope).then (iterations)=>
