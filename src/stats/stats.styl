@@ -2,22 +2,22 @@
   0% {
     background-color: darken(error-color, 30%);
   }
-  0.5% {
-    background-color: error-color;
-  }
-  1% {
-    background-color: darken(error-color, 30%);
-  }
-  1.5% {
-    background-color: error-color;
-  }
   2% {
-    background-color: darken(error-color, 30%);
-  }
-  2.5% {
     background-color: error-color;
   }
-  3% {
+  4% {
+    background-color: darken(error-color, 30%);
+  }
+  6% {
+    background-color: error-color;
+  }
+  8% {
+    background-color: darken(error-color, 30%);
+  }
+  10% {
+    background-color: error-color;
+  }
+  12% {
     background-color: darken(error-color, 30%);
   }
   100% {
@@ -27,14 +27,14 @@
 
 stat(color) {
   i {
-    color: lighten(color, 40%);
+    color: color;
   }
 }
 
 .stats {
   background: #111;
-  border: solid 0.2em #555;
   display: flex;
+  font-size: 1.2em;
   padding: 0 0.4em;
   text-align: center;
 
@@ -49,33 +49,42 @@ stat(color) {
   }
 
   .velocity {
-    stat(#7F3D99);
+    stat(#AA62C7);
 
     i {
-      transform: rotate(-45deg);
+      transform: translate(3px, -3px) rotate(-45deg);
     }
   }
 
   .stories-in-progress {
-    stat(action-color);
+    stat(#E7953E);
   }
 
   .points-in-progress {
-    stat(action-color);
+    stat(#E0D263);
   }
 
   .warning {
-    -webkit-animation: flashwarning 300s infinite;
-    animation: flashwarning 300s infinite;
+    -webkit-animation: flashwarning 60s infinite;
+    animation: flashwarning 60s infinite;
     stat(error-color);
+
+    i {
+      color: #FFF;
+      opacity: 0.6;
+    }
+
+    p {
+      opacity: 0.6;
+    }
   }
 
   .backlog {
-    stat(success-color);
+    stat(#9AC54F);
   }
 
   .icebox {
-    stat(primary-color);
+    stat(#99BEE0);
   }
 
   p {
@@ -89,7 +98,6 @@ stat(color) {
 
   i {
     font-size: 0.9em;
-    opacity: 0.6;
   }
 
   span {
@@ -97,7 +105,7 @@ stat(color) {
   }
 }
 
-@media only screen and (max-width: 72em) {
+@media only screen and (max-width: 84em) {
   .stats {
     div {
       padding: 0.2em 0 0.6em;

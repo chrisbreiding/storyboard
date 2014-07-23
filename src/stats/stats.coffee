@@ -25,7 +25,7 @@ module.exports = React.createClass
       Stat
         type: if @props.overInProgressLimit then 'stories-in-progress warning' else 'stories-in-progress'
         label: 'stories in progress'
-        icon: 'refresh'
+        icon: 'tasks'
         value: @props.storiesInProgress
     ,
       Stat
@@ -37,11 +37,11 @@ module.exports = React.createClass
       Stat
         type: 'backlog'
         label: 'stories in backlog'
-        icon: 'list-ul'
+        icon: 'list'
         value: @props.backlogCount
     ,
       Stat
         type: 'icebox'
         label: 'stories in icebox'
-        icon: 'asterisk'
+        icon: 'empire'
         value: @props.iceboxCount
