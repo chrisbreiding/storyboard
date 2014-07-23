@@ -8,7 +8,9 @@
     position: relative;
 
     .main {
-      margin: 0 2em;
+      margin-right: 0.5em;
+      margin-left: 2em;
+      position: relative;
 
       > div {
         display: inline;
@@ -40,6 +42,18 @@
       }
     }
 
+    .tasks {
+      color: #878787;
+      float: right;
+      font-size: 0.7em;
+      line-height: 2.2em;
+      margin: 0 0.25em;
+
+      span {
+        margin-left: 0.2em;
+      }
+    }
+
     .labels {
       float: right;
       margin: 0.125em 0.25em;
@@ -53,18 +67,10 @@
     }
 
     .state-meter {
-      background-image: repeating-linear-gradient(-65deg,
-                                                  transparent,
-                                                  transparent 5px,
-                                                  rgba(255, 255, 255, .3) 5px,
-                                                  rgba(255, 255, 255, .3) 10px);
-      border-radius: 0 3px 3px 0;
-      display: block;
+      height: 5px;
       position: absolute;
-      top: 5px;
+      top: 0;
       left: 0;
-      width: 0;
-      height: 1.5em;
     }
 
     &.unscheduled,
@@ -72,68 +78,42 @@
       background: #e3e3e3;
       border-color: #c7c7c7;
 
-      .main {
-        margin-left: .5em;
-      }
-
       .state-meter {
         display: none;
       }
     }
 
     statemeter(color, width) {
+      padding-top: 10px;
+
       .state-meter {
-        background-color: color;
+        background: color;
         width: width;
       }
     }
 
     &.started {
-      statemeter(#C78719, 10px);
+      statemeter(#C78719, 25%);
     }
 
     &.finished {
-      statemeter(#0F516B, 20px);
+      statemeter(#0F516B, 50%);
     }
 
     &.delivered {
-      statemeter(#7F3D99, 30px);
+      statemeter(#7F3D99, 75%);
     }
 
     &.rejected {
-      statemeter(darken(error-color, 40%), 20px);
+      statemeter(error-color, 50%);
     }
 
     &.accepted {
-      statemeter(darken(success-color, 40%), 40px);
-      .state-meter {
-        background-image: none;
-        color: rgba(255, 255, 255, 0.6);
-        text-align: center;
-
-        i {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          line-height: 1.5em;
-        }
-      }
-    }
-
-    .tasks {
-      color: #878787;
-      font-size: .7em;
-      margin-left: .4em;
-
-      span {
-        margin-left: .2em;
-      }
+      statemeter(success-color, 100%);
     }
 
     .story-type {
-      float: right;
+      float: left;
       font-size: 1.2em;
       margin: 0.125em;
       position: relative;

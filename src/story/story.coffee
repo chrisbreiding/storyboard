@@ -14,10 +14,7 @@ storyIcon = (storyType, estimate)->
 
 storyState = (state)->
   if state
-    if state is 'accepted'
-      icon = React.DOM.i className: 'fa fa-check'
-
-    React.DOM.span className: 'state-meter', icon
+    React.DOM.span className: 'state-meter'
 
 owners = (owners)->
   if owners
@@ -27,7 +24,7 @@ owners = (owners)->
       owners.map (owner, i)-> React.DOM.li key: i, owner
 
 tasks = (tasks)->
-  if tasks
+  if tasks and tasks.length
     completed = _.reduce tasks, (total, complete)->
       total += complete
       total
@@ -46,9 +43,11 @@ module.exports = React.createClass
     React.DOM.li
       className: "#{@props.current_state} #{@props.story_type}"
     ,
+      storyState @props.current_state
+    ,
       storyIcon @props.story_type, @props.estimate
     ,
-      storyState @props.current_state
+      tasks @props.tasks
     ,
       React.DOM.ul
         className: 'labels'
@@ -62,5 +61,3 @@ module.exports = React.createClass
           dangerouslySetInnerHTML: __html: marked @props.name
       ,
         owners @props.owners
-      ,
-        tasks @props.tasks
