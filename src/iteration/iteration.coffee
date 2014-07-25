@@ -10,22 +10,18 @@ module.exports = React.createClass
   render: ->
     stories = @props.stories
     filteredStories = _.filter stories, (story, index)=>
-      cutoff = if @props.showAcceptedType is 'count'
+      return true unless @storyIsAccepted story
+
+      if @props.showAcceptedType is 'count'
+        value = index
         numAcceptedStories = (_.filter stories, (story)=> @storyIsAccepted story).length
         cutoff = numAcceptedStories - @props.showAcceptedValue
-        if cutoff >= 0 then cutoff else 0
+        cutoff = if cutoff >= 0 then cutoff else 0
       else
-        moment().startOf('day').subtract('days', @props.showAcceptedValue).unix()
+        value = moment().startOf('day').subtract('days', @props.showAcceptedValue).unix()
+        cutoff = moment(story.accepted_at).startOf('day').unix()
 
-      if @storyIsAccepted story
-        value = if @props.showAcceptedType is 'count'
-          index
-        else
-          moment(story.accepted_at).startOf('day').unix()
-
-        value >= cutoff
-      else
-        true
+      value >= cutoff
 
     React.DOM.div
       className: 'iteration'
