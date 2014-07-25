@@ -1,8 +1,8 @@
 React = require 'react'
+RSVP = require 'rsvp'
 _ = require 'lodash'
 pivotal = require '../data/pivotal'
 Login = require '../login/login'
-Stats = require '../stats/stats'
 Project = require '../project/project'
 Settings = require '../settings/settings'
 store = require '../data/store'
@@ -14,68 +14,44 @@ if fontSizeMatch and fontSizeMatch[1]
 module.exports = React.createClass
 
   getInitialState: ->
-    apiToken: store.fetch 'apiToken'
+    apiToken: pivotal.apiToken
     projectId: store.fetch 'projectId'
+
     inProgressMax: store.fetch('inProgressMax') or 5
     baseFontSize: fontSizeOverride or store.fetch('baseFontSize') or 24
     baseFontSizeOverridden: !!fontSizeOverride
     showAcceptedType: store.fetch('showAcceptedType') or 'count'
     showAcceptedValue: store.fetch('showAcceptedValue') or 2
-    storiesInProgress: 0
-    pointsInProgress: 0
-    velocity: 0
-    backlogCount: 0
-    iceboxCount: 0
 
   render: ->
     mainView = if @state.apiToken
-      stats = Stats
-        velocity: @state.velocity
-        storiesInProgress: @state.storiesInProgress
-        overInProgressLimit: @state.storiesInProgress > @state.inProgressMax
-        pointsInProgress: @state.pointsInProgress
-        backlogCount: @state.backlogCount
-        iceboxCount: @state.iceboxCount
-
-      project = Project
-        ref: 'project'
-        id: @state.projectId
-        showAcceptedType: @state.showAcceptedType
-        showAcceptedValue: @state.showAcceptedValue
-        onUpdate: @projectUpdated
+      if @state.project
+        project = Project _.extend {}, @state.project,
+          overInProgressLimit: @state.project.storiesInProgress > @state.inProgressMax
+          showAcceptedType: @state.showAcceptedType
+          showAcceptedValue: @state.showAcceptedValue
 
       settings = Settings _.extend {}, @state,
+        autoOpen: !@state.projectId?
         onUpdate: @updateSetting
         onSave: @saveSettings
 
-      React.DOM.div null, stats, project, settings
+      React.DOM.div null, project, settings
     else
       Login onLogin: @updateApiToken
+
     React.DOM.div
       style: fontSize: @state.baseFontSize
     , mainView
 
   updateApiToken: (apiToken)->
-    store.save 'apiToken', apiToken
-    pivotal.apiToken = apiToken
-    pivotal.getProjects().then (projects)=>
-      projectId = projects[0].id
-      store.save 'projectId', projectId
-      @setState
-        apiToken: apiToken
-        projectId: projectId
-        projects: projects
-
-  projectUpdated: ->
-    @setState
-      storiesInProgress: @refs.project.storiesInProgress()
-      pointsInProgress: @refs.project.pointsInProgress()
-      velocity: @refs.project.state.velocity
-      backlogCount: @refs.project.state.backlogCount
-      iceboxCount: @refs.project.state.iceboxCount
+    pivotal.setApiToken apiToken
+    @setState apiToken: apiToken, =>
+      @_updateProjects()
 
   updateSetting: (setting)->
-    @setState setting
+    @setState setting, =>
+      @_updateProject(setting.projectId, @state.projects) if setting.projectId?
 
   saveSettings: ->
     store.save
@@ -84,3 +60,48 @@ module.exports = React.createClass
       baseFontSize: @state.baseFontSize
       showAcceptedType: @state.showAcceptedType
       showAcceptedValue: @state.showAcceptedValue
+
+  componentDidMount: ->
+    @_updateProjects() if @state.apiToken
+
+  _updateProjects: ->
+    pivotal.getProjects().then (projects)=>
+      projectId = @state.projectId or do ->
+        store.save 'projectId', projectId
+        projects[0].id
+
+      @_updateProject projectId, projects
+
+  _updateProject: (projectId, projects)->
+    pivotal.getProject(projectId).then (project)=>
+
+      pivotal.listenForProjectUpdates projectId, project.version, =>
+        @_update project, projects
+
+      @_update project, projects
+
+  _update: (project, projects)->
+    updates =
+      iterations: pivotal.getIterations project.id
+      backlogCount: pivotal.getBacklogCount project.id
+      iceboxCount: pivotal.getIceboxCount project.id
+
+    RSVP.hash(updates).then (result)=>
+      @setState
+        projects: projects
+        project: _.extend result,
+          version: project.version
+          velocity: project.current_velocity
+          storiesInProgress: @_storiesInProgress(result.iterations).length
+          pointsInProgress: @_numPointsInProgress result.iterations
+
+  _numPointsInProgress: (iterations)->
+    _.reduce @_storiesInProgress(iterations), (total, story)->
+      total + (story.estimate or 0)
+    , 0
+
+  _storiesInProgress: (iterations)->
+    return [] unless iterations?[0]?.stories?
+
+    _.filter iterations[0].stories, (story)->
+      _.contains pivotal.inProgressStoryTypes, story.current_state

@@ -10,6 +10,10 @@ module.exports =
 
   apiToken: store.fetch 'apiToken'
 
+  setApiToken: (apiToken)->
+    @apiToken = apiToken
+    store.save 'apiToken', apiToken
+
   inProgressStoryTypes: ['started', 'finished', 'delivered', 'rejected']
 
   getProjects: ->

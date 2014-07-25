@@ -7,7 +7,7 @@ numberProps = ['inProgressMax', 'baseFontSize', 'showAcceptedValue']
 
 module.exports = React.createClass
 
-  getInitialState: ->
+  getDefaultProps: ->
     projects: []
 
   render: ->
@@ -49,7 +49,7 @@ module.exports = React.createClass
             value: @props.projectId
             onChange: _.partial @updateSetting, 'projectId'
           ,
-            @state.projects.map (project)->
+            @props.projects.map (project)->
               React.DOM.option value: project.id, project.name
       ,
         React.DOM.fieldset null,
@@ -102,10 +102,6 @@ module.exports = React.createClass
           React.DOM.span className: 'suffix', showAcceptedSuffix
       ,
         React.DOM.button type: 'submit', 'Save'
-
-  componentDidMount: ->
-    pivotal.getProjects().then (projects)=>
-      @setState projects: projects
 
   open: ->
     @refs.container.getDOMNode().className = 'settings-container open'
