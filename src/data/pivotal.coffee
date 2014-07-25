@@ -13,56 +13,20 @@ module.exports =
   inProgressStoryTypes: ['started', 'finished', 'delivered', 'rejected']
 
   getProjects: ->
-    @_queryPivotal('projects').then (projects)->
-      _.map projects, (project)->
-        _.pick project, 'id', 'name', 'version'
+    @_queryPivotal 'projects'
 
   getProject: (id)->
-    @_queryPivotal("projects/#{id}", fields: 'name,version,current_velocity').then (project)->
-      _.pick project, 'id', 'name', 'version', 'current_velocity'
+    @_queryPivotal "projects/#{id}", fields: 'name,version,current_velocity'
 
   getIterations: (projectId)->
     current = @_queryIterations projectId, 'current', true
     backlog = @_queryIterations projectId, 'backlog'
 
-    RSVP.all([current, backlog]).then (results)->
-      _.flatten results
+    RSVP.all([current, backlog]).then (results)-> _.flatten results
 
   getBacklogCount: (projectId)-> @_getCount projectId, 'unstarted'
 
   getIceboxCount: (projectId)-> @_getCount projectId, 'unscheduled'
-
-  _getCount: (projectId, state)->
-    @_queryPivotal("projects/#{projectId}/stories", with_state: state, limit: 101).then (stories)->
-      if stories.length <= 100 then stories.length else '100+'
-
-  _queryIterations: (projectId, scope, withOwners = false)->
-    @_queryPivotal("projects/#{projectId}/iterations", scope: scope).then (iterations)=>
-      @_mapIterations projectId, iterations, withOwners
-
-  _mapIterations: (projectId, iterations, withOwners)->
-    new RSVP.Promise (resolve)=>
-      promises = []
-      curatedIterations = _.map iterations, (iteration)=>
-        number: iteration.number
-        start: new Date(iteration.start)
-        finish: new Date(iteration.finish)
-        stories: _.map iteration.stories, (story)=>
-          curatedStory = _.pick story, 'id', 'name', 'current_state', 'story_type', 'estimate', 'accepted_at'
-          curatedStory.labels = _.pluck story.labels, 'name'
-
-          if _.contains @inProgressStoryTypes, curatedStory.current_state
-            promises.push @_queryPivotal("projects/#{projectId}/stories/#{story.id}/tasks").then (tasks)->
-              curatedStory.tasks = _.map tasks, (task)-> task.complete | 0
-
-          if withOwners
-            promises.push @_queryPivotal("projects/#{projectId}/stories/#{story.id}/owners").then (owners)->
-              curatedStory.owners = _.pluck owners, 'initials'
-
-          curatedStory
-
-      RSVP.all(promises).then ->
-        resolve curatedIterations
 
   listenForProjectUpdates: (id, version, onUpdate)->
     if @projectData? and @projectData.id isnt id
@@ -78,7 +42,35 @@ module.exports =
     @projectData =
       id: id
       version: version
-      interval: setInterval(queryForUpdates,  POLL_INTERVAL)
+      interval: setInterval queryForUpdates,  POLL_INTERVAL
+
+  _getCount: (projectId, state)->
+    @_queryPivotal("projects/#{projectId}/stories", with_state: state, limit: 101).then (stories)->
+      if stories.length <= 100 then stories.length else '100+'
+
+  _queryIterations: (projectId, scope, withOwners = false)->
+    @_queryPivotal("projects/#{projectId}/iterations", scope: scope).then (iterations)=>
+      @_mapIterations projectId, iterations, withOwners
+
+  _mapIterations: (projectId, iterations, withOwners)->
+    new RSVP.Promise (resolve)=>
+      promises = []
+      curatedIterations = _.map iterations, (iteration)=>
+        iteration.start = new Date(iteration.start)
+        iteration.finish = new Date(iteration.finish)
+        stories: _.map iteration.stories, (story)=>
+          if _.contains @inProgressStoryTypes, story.current_state
+            promises.push @_queryPivotal("projects/#{projectId}/stories/#{story.id}/tasks").then (tasks)->
+              story.tasks = tasks
+
+          if withOwners
+            promises.push @_queryPivotal("projects/#{projectId}/stories/#{story.id}/owners").then (owners)->
+              story.owners = owners
+
+          story
+
+      RSVP.all(promises).then ->
+        resolve curatedIterations
 
   _queryPivotal: (url, data)->
     reqwest

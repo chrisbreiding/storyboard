@@ -21,13 +21,12 @@ owners = (owners)->
     React.DOM.ul
       className: 'owners'
     ,
-      owners.map (owner, i)-> React.DOM.li key: i, owner
+      owners.map (owner, i)-> React.DOM.li key: i, owner.initials
 
 tasks = (tasks)->
   if tasks and tasks.length
-    completed = _.reduce tasks, (total, complete)->
-      total += complete
-      total
+    completed = _.reduce tasks, (total, task)->
+      total + (task.complete | 0)
     , 0
 
     React.DOM.span
@@ -52,7 +51,7 @@ module.exports = React.createClass
       React.DOM.ul
         className: 'labels'
       ,
-        @props.labels.map (label, i)-> React.DOM.li key: i, label
+        @props.labels.map (label, i)-> React.DOM.li key: i, label.name
     ,
       React.DOM.div
         className: 'main'

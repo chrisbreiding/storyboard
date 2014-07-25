@@ -35,8 +35,7 @@ module.exports = React.createClass
 
   pointsInProgress: ->
     _.reduce @_storiesInProgress(), (total, story)->
-      total += (story.estimate or 0)
-      total
+      total + (story.estimate or 0)
     , 0
 
   _storiesInProgress: ->
