@@ -8,9 +8,9 @@ storyIcon = (storyType, estimate)->
     when 'chore' then 'fa-wrench'
     when 'bug' then 'fa-bug'
     when 'release' then 'fa-flag-checkered'
-  if estimate
-    estimate = React.DOM.span className: 'estimate', estimate
-  React.DOM.i className: "story-type fa #{className}", estimate
+  if storyType is 'feature' and estimate
+    estimateLabel = React.DOM.span className: 'estimate', estimate
+  React.DOM.i className: "story-type fa #{className}", estimateLabel
 
 storyState = (state)->
   if state
