@@ -62,7 +62,7 @@ module.exports =
       curatedIterations = _.map iterations, (iteration)=>
         iteration.start = new Date(iteration.start)
         iteration.finish = new Date(iteration.finish)
-        stories: _.map iteration.stories, (story)=>
+        iteration.stories = _.map iteration.stories, (story)=>
           if _.contains @inProgressStoryTypes, story.current_state
             promises.push @_queryPivotal("projects/#{projectId}/stories/#{story.id}/tasks").then (tasks)->
               story.tasks = tasks
@@ -72,6 +72,8 @@ module.exports =
               story.owners = owners
 
           story
+
+        iteration
 
       RSVP.all(promises).then ->
         resolve curatedIterations
