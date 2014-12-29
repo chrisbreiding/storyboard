@@ -1,8 +1,9 @@
 NAMESPACE = 'storyboard'
 
-module.exports =
+module.exports = class Store
 
-  data: JSON.parse(localStorage[NAMESPACE] or '{}')
+  constructor: (@namespace)->
+    @data = JSON.parse(localStorage[@namespace] or '{}')
 
   fetch: (key)->
     @data[key]
@@ -13,5 +14,5 @@ module.exports =
     else
       for itemKey, value of key
         @data[itemKey] = value
-    localStorage[NAMESPACE] = JSON.stringify @data
+    localStorage[@namespace] = JSON.stringify @data
     value

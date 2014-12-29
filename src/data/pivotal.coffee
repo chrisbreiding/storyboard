@@ -1,18 +1,14 @@
 reqwest = require 'reqwest'
 _ = require 'lodash'
 RSVP = require 'rsvp'
-store = require './store'
 
 BASE_URL = 'https://www.pivotaltracker.com/services/v5/'
 POLL_INTERVAL = 1000
 
 module.exports =
 
-  apiToken: store.fetch 'apiToken'
-
   setApiToken: (apiToken)->
     @apiToken = apiToken
-    store.save 'apiToken', apiToken
 
   inProgressStoryTypes: ['started', 'finished', 'delivered', 'rejected']
 

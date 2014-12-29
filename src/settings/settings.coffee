@@ -1,7 +1,5 @@
 React = require 'react'
 _ = require 'lodash'
-pivotal = require '../data/pivotal'
-store = require '../data/store'
 
 numberProps = ['inProgressMax', 'baseFontSize', 'showAcceptedValue']
 
@@ -50,7 +48,7 @@ module.exports = React.createClass
             onChange: _.partial @updateSetting, 'projectId'
           ,
             @props.projects.map (project)->
-              React.DOM.option value: project.id, project.name
+              React.DOM.option key: project.id, value: project.id, project.name
       ,
         React.DOM.fieldset null,
           React.DOM.label null, 'Max. stories in progress before warning:'
@@ -87,7 +85,7 @@ module.exports = React.createClass
             onChange: _.partial @updateSetting, 'showAcceptedType'
           ,
             ['count', 'age'].map (type)->
-              React.DOM.option null, type
+              React.DOM.option key: type, type
       ,
         React.DOM.fieldset null,
           React.DOM.label null, showAcceptedPrefix

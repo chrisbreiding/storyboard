@@ -1,20 +1,30 @@
 React = require 'react'
 RSVP = require 'rsvp'
 _ = require 'lodash'
+
 pivotal = require '../data/pivotal'
 Login = require '../login/login'
 Project = require '../project/project'
 Settings = require '../settings/settings'
-store = require '../data/store'
+Store = require '../data/store'
 
 fontSizeMatch = location.search.match /\?.*font-?[Ss]ize\=(\d+)/i
 if fontSizeMatch and fontSizeMatch[1]
   fontSizeOverride = fontSizeMatch[1]
 
+idMatch = location.search.match /\?.*id\=(\d+)/
+id = if idMatch then "-#{idMatch[1]}" else ''
+
+namespace = "storyboard#{id}"
+store = new Store namespace
+
+apiToken = store.fetch 'apiToken'
+pivotal.setApiToken apiToken
+
 module.exports = React.createClass
 
   getInitialState: ->
-    apiToken: pivotal.apiToken
+    apiToken: apiToken
     projectId: store.fetch 'projectId'
 
     inProgressMax: store.fetch('inProgressMax') or 5
@@ -46,6 +56,7 @@ module.exports = React.createClass
 
   updateApiToken: (apiToken)->
     pivotal.setApiToken apiToken
+    store.save 'apiToken', apiToken
     @setState apiToken: apiToken, =>
       @_updateProjects()
 
