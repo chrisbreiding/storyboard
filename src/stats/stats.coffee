@@ -1,25 +1,29 @@
 React = require 'react'
 
+RD = React.DOM
+
 Stat = React.createClass
   render: ->
-    React.DOM.div
+    RD.div
       className: @props.type
     ,
-      React.DOM.i className: "fa fa-#{@props.icon}"
+      RD.i className: "fa fa-#{@props.icon}"
     ,
-      React.DOM.span null, @props.value
+      RD.span null, @props.value
     ,
-      React.DOM.p null, @props.label or @props.type
+      RD.p null, @props.label or @props.type
 
 module.exports = React.createClass
 
   render: ->
-    React.DOM.div
+    RD.div
       className: 'stats'
+    ,
+      RD.h2 null, @props.name
     ,
       Stat
         type: 'velocity'
-        icon: 'fighter-jet'
+        icon: 'dashboard'
         value: @props.velocity
     ,
       Stat
@@ -39,9 +43,3 @@ module.exports = React.createClass
         label: 'stories in backlog'
         icon: 'list'
         value: @props.backlogCount
-    ,
-      Stat
-        type: 'icebox'
-        label: 'stories in icebox'
-        icon: 'empire'
-        value: @props.iceboxCount

@@ -101,6 +101,7 @@ module.exports = React.createClass
       @setState
         projects: projects
         project: _.extend result,
+          name: project.name
           version: project.version
           velocity: project.current_velocity
           storiesInProgress: @_storiesInProgress(result.iterations).length
